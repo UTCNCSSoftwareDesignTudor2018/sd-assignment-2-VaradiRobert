@@ -13,7 +13,7 @@ import com.application.course_management.persistence.repositories.CourseReposito
 public class CourseService {
 	@Autowired
 	private CourseRepository courseRepository;
-	public Course getCourse(int courseId) {
+	public Course getCourseById(int courseId) {
 		Optional<Course> course =  courseRepository.findById(courseId);
 		return course.get();
 	}

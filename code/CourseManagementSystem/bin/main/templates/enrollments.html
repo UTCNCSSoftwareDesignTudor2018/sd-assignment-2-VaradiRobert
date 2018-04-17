@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Courses</title>
+<link rel="stylesheet" href="/css/tab.css"/>
+<script src="/js/tab.js"></script>
+</head>
+<body>
+	<div class="tab">
+		<button class="tablinks" th:each="course: ${courses}" th:onclick="'listStudents(event,' + ${course.id} + ')'" th:text="${course.name}"></button>
+	</div>
+	<div th:each="course: ${courses}" th:id="${course.id}" class="tabcontent">
+	  <table>
+	  	<tr>
+	  		<th>Full Name</th>
+	  		<th>Phone</th>
+	  		<th>Email</th>
+	  		<th>Address</th>
+	  		<th>Status</th>
+	  		<th>Grade</th>
+	  	</tr>
+	  	<tr th:each="enrollment: ${course.enrollments}">
+	  		<td th:text="${enrollment.student.firstName} + ' ' + ${enrollment.student.lastName}"></td>
+	  		<td th:text="${enrollment.student.phone}"></td>
+	  		<td th:text="${enrollment.student.email}"></td>
+	  		<td th:text="${enrollment.student.address}"></td>
+	  		<td th:text="${enrollment.status}"></td>
+	  		<div th:if="${enrollment.grade == -1}">
+	  			<td>Not Recorded</td>
+	  		</div>
+	  		<div th:unless="${enrollment.grade == -1}">
+	  			<td th:text="${enrollment.grade}"></td>
+	  		</div>
+	  		<div th:if="${enrollment.status == 'Accepted'}">
+	  			<td><button class="delete-button" th:onclick="'deleteStudentFromCourse(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Delete</button></td>
+	  			<td><button class="grade-button">Grade</button></td>
+	  		</div>
+	  		<div th:if="${enrollment.status == 'Enrolled'}">
+	  			<td><button class="delete-button" th:onclick="'deleteStudentFromCourse(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Delete</button></td>
+	  			<td><button class="grade-button">Grade</button></td>
+	  		</div>
+	  		<div th:if="${enrollment.status == 'Request'}">
+	  			<td><button class="accept-button" th:onclick="'acceptEnrollmentRequest(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Accept</button></td>
+	  			<td><button class="decline-button" th:onclick="'declineEnrollmentRequest(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Decline</button></td>
+	  		</div>
+	  	</tr>
+	  </table>
+	</div>
+</body>
+</html>

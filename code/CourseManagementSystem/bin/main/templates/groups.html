@@ -2,23 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Students</title>
+<title>Groups</title>
+<link rel="stylesheet" href="/css/tab.css"/>
+<script src="/js/tab.js"></script>
 </head>
 <body>
-	<select>
-		<option th:each="group: ${groups}" th:text="${groups.number}"/>
-	</select>
-	<table>
-		<tr>
-			<th>Full Name</th>
-			<th>Email Address</th>
-			<th>Phone Number</th>
-		</tr>
-		<tr th:each="student: ${students}">
-			<td th:text="${student.firstName} ${student.lastName}"></td>
-			<td th:text="${student.email}"></td>
-			<td th:text="${student.phone}"></td>
-		</tr>
-	</table>
+	<div class="tab">
+		<button class="tablinks" th:each="group: ${groups}" th:onclick="'listStudents(event,' + ${group.number} +')'" th:text="${group.number}"></button>
+	</div>
+	<div th:each="group: ${groups}" th:id="${group.number}" class="tabcontent">
+	  <table>
+	  	<tr>
+	  		<th>Full Name</th>
+	  		<th>Phone</th>
+	  		<th>Email</th>
+	  		<th>Address</th>
+	  	</tr>
+	  	<tr th:each="student: ${group.students}">
+	  		<td th:text="${student.firstName} + ' ' + ${student.lastName}"></td>
+	  		<td th:text="${student.phone}"></td>
+	  		<td th:text="${student.email}"></td>
+	  		<td th:text="${student.address}"></td>
+	  	</tr>
+	  </table>
+	</div>
 </body>
 </html>

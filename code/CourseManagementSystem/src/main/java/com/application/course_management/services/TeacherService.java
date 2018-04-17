@@ -27,21 +27,21 @@ public class TeacherService {
 	@Autowired
 	private GroupService groupService;
 	
-	public void removeStudentFromCourse(String studentName, String courseName) {
-		Course course = courseService.getCourseByName(courseName);
-		Student student = studentService.getStudentByUserName(studentName);
+	public void removeStudentFromCourse(int studentId, int courseId) {
+		Course course = courseService.getCourseById(courseId);
+		Student student = studentService.getStudentById(studentId);
 		enrollmentService.removeStudent(student.getIdentityCardNumber(), course.getId());
 	}
 	
-	public void acceptStudentEnrollmentRequest(String studentName, String courseName) {
-		Course course = courseService.getCourseByName(courseName);
-		Student student = studentService.getStudentByUserName(studentName);
+	public void acceptStudentEnrollmentRequest(int studentId, int courseId) {
+		Course course = courseService.getCourseById(courseId);
+		Student student = studentService.getStudentById(studentId);
 		enrollmentService.acceptEnrollment(student.getIdentityCardNumber(), course.getId());
 	}
 
-	public void declineStudentEnrollmentRequest(String studentName, String courseName) {
-		Course course = courseService.getCourseByName(courseName);
-		Student student = studentService.getStudentByUserName(studentName);
+	public void declineStudentEnrollmentRequest(int studentId, int courseId) {
+		Course course = courseService.getCourseById(courseId);
+		Student student = studentService.getStudentById(studentId);
 		enrollmentService.declineEnrollment(student.getIdentityCardNumber(), course.getId());
 	}
 	

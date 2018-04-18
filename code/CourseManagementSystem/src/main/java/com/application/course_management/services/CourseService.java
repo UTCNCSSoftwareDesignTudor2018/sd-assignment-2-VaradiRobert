@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.application.course_management.persistence.entities.Course;
-import com.application.course_management.persistence.repositories.CourseRepository;
+import com.application.course_management.persistence.sql.repositories.CourseRepository;
 
 @Service
 public class CourseService {

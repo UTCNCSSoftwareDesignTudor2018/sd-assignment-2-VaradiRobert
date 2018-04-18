@@ -11,7 +11,7 @@ import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Enrollment;
 import com.application.course_management.persistence.entities.Group;
 import com.application.course_management.persistence.entities.Student;
-import com.application.course_management.persistence.repositories.StudentRepository;
+import com.application.course_management.persistence.sql.repositories.StudentRepository;
 
 @Service
 public class StudentService {

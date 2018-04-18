@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Group;
 import com.application.course_management.persistence.entities.Teacher;
+import com.application.course_management.services.ReportService;
 import com.application.course_management.services.TeacherService;
 
 @Controller
@@ -85,5 +87,29 @@ public class TeacherController {
 		String grade = request.getParameter("grade");
 		System.err.println(studentId + " " + courseId + " " + grade);
 		return new RedirectView("welcome-page");
+	}
+	@RequestMapping(value = "/reports/generate/all-enrolled-students-and-grades", method = RequestMethod.GET)
+	@ResponseBody
+	public String generateAllEnrolledStudentsAndGradesReport() {
+		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.ALL_STUDENTS_AND_GRADES_REPORT, "myReport");
+		return "OK";
+	}
+	@RequestMapping(value = "/reports/generate/all-enrolled-students-by-groups", method = RequestMethod.GET)
+	@ResponseBody
+	public String generateAllEnrolledStudentsByGroupsReport() {
+		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.ALL_STUDENTS_BY_GROUPS_REPORT, "myReport");
+		return "OK";
+	}
+	@RequestMapping(value = "/reports/generate/passing-students", method = RequestMethod.GET)
+	@ResponseBody
+	public String generatePassingStudentsReport() {
+		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.PASSING_STUDENTS_REPORT, "myReport");
+		return "OK";
+	}
+	@RequestMapping(value = "/reports/generate/failing-students", method = RequestMethod.GET)
+	@ResponseBody
+	public String generateFailingStudentsReport() {
+		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.FAILING_STUDENTS_REPORT, "myReport");
+		return "OK";
 	}
 }

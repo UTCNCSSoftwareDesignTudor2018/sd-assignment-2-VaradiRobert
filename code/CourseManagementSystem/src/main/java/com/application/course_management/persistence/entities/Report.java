@@ -1,18 +1,11 @@
 package com.application.course_management.persistence.entities;
 
 import java.sql.Date;
-import java.util.List;
 
-public class Report {
-	private List<Enrollment> enrollments;
+public abstract class Report {
 	private Teacher teacher;
 	private Date date;
-	public List<Enrollment> getEnrollments() {
-		return enrollments;
-	}
-	public void setEnrollments(List<Enrollment> enrollments) {
-		this.enrollments = enrollments;
-	}
+	private String name;
 	public Teacher getTeacher() {
 		return teacher;
 	}
@@ -24,5 +17,11 @@ public class Report {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }

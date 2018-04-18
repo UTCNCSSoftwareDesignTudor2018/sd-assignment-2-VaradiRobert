@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import com.application.course_management.persistence.entities.Group;
-import com.application.course_management.persistence.repositories.GroupRepository;
+import com.application.course_management.persistence.sql.repositories.GroupRepository;
 
 @Service
 @Configurable

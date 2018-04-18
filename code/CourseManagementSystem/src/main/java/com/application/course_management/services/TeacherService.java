@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Enrollment;
 import com.application.course_management.persistence.entities.Group;
+import com.application.course_management.persistence.entities.Report;
 import com.application.course_management.persistence.entities.Student;
 import com.application.course_management.persistence.entities.Teacher;
-import com.application.course_management.persistence.repositories.TeacherRepository;
+import com.application.course_management.persistence.sql.repositories.TeacherRepository;
 
 @Service
 public class TeacherService {
@@ -26,7 +27,8 @@ public class TeacherService {
 	private StudentService studentService;
 	@Autowired
 	private GroupService groupService;
-	
+	@Autowired
+	private ReportService reportService;
 	public void removeStudentFromCourse(int studentId, int courseId) {
 		Course course = courseService.getCourseById(courseId);
 		Student student = studentService.getStudentById(studentId);
@@ -99,5 +101,13 @@ public class TeacherService {
 	
 	public Group getGroupByNumber(int groupNumber) {
 		return groupService.getByGroupNumber(groupNumber);
+	}
+	
+	public void generateReport(Teacher teacher, String reportType, String reportName) {
+		reportService.generateReport(reportType, reportName, teacher);
+	}
+	
+	public List<Report> getReports(Teacher teacher, String reportType) {
+		return reportService.getReports(teacher, reportType);
 	}
 }

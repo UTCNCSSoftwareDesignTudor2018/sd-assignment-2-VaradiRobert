@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.application.course_management.persistence.entities.Enrollment;
-import com.application.course_management.persistence.repositories.EnrollmentRepository;
+import com.application.course_management.persistence.sql.repositories.EnrollmentRepository;
 
 @Service
 public class EnrollmentService {

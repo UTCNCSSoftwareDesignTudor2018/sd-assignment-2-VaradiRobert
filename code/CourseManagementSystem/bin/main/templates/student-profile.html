@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>My Profile</title>
+</head>
+<body>
+	<form action="http://localhost:8080/student/profile/modify" method="POST">
+		<table>
+			<tr>
+				<td>First Name: </td>
+				<td><input th:value="${student.firstName}" th:type="text" th:name="firstName"/></td>
+			</tr>
+			<tr>
+				<td>Last Name: </td>
+				<td><input th:value="${student.lastName}" th:type="text" th:name="lastName"/></td>
+			</tr>
+			<tr>
+				<td>User Name: </td>
+				<td><div th:text="${student.userName}" th:name="userName"></div></td>
+			</tr>
+			<tr>
+				<td>Password: </td>
+				<td> <input th:value="${student.password}" th:type="password" th:name="password"/></td>
+			</tr>
+			<tr>
+				<td>Password Again: </td>
+				<td><input th:value="${student.password}" th:type="password" th:name="passwordAgain"/></td>
+			</tr>
+			<tr>
+				<td>Personal Numerical Code: </td>
+				<td><input th:value="${student.personalNumericalCode}" th:name="personalNumericalCode" th:type="text"/></td>
+			</tr>
+			<tr>
+				<td>Email: </td>
+				<td><input th:value="${student.email}" th:name="email" th:type="text"/></td>
+			</tr>
+			<tr>
+				<td>Address: </td>
+				<td><input th:value="${student.address}" th:name="address" th:type="text"/></td>
+			</tr>
+			<tr>
+				<td>Phone: </td>
+				<td><input th:value="${student.phone}" th:name="phone" th:type="text"/></td>
+			</tr>
+			<tr>
+				<td><button type="submit"/>Modify</button></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

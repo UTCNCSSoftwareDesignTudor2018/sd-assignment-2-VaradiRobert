@@ -1,5 +1,6 @@
 package com.application.course_management.persistence.entities;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -28,6 +29,8 @@ public class Course {
 	private Teacher teacher;
 	@OneToMany(mappedBy = "course")
 	private List<Enrollment> enrollments;
+	@Column(name = "exam_date")
+	private Date examDate;
 	public String getName() {
 		return name;
 	}
@@ -57,5 +60,22 @@ public class Course {
 	}
 	public List<Enrollment> getEnrollments() {
 		return enrollments;
+	}
+	public Date getExamDate() {
+		return examDate;
+	}
+	public void setExamDate(Date examDate) {
+		this.examDate = examDate;
+	}
+	@Override
+	public boolean equals(Object object) {
+		if(object == null) {
+			return false;
+		}
+		if(this == object) {
+			return true;
+		}
+		Course course = (Course)object;
+		return course.getName().equals(name) && course.getCredits() == credits;
 	}
 }

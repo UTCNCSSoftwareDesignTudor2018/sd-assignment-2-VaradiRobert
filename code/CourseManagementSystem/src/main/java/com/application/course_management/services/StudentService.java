@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Enrollment;
-import com.application.course_management.persistence.entities.Exam;
 import com.application.course_management.persistence.entities.Group;
 import com.application.course_management.persistence.entities.Student;
 import com.application.course_management.persistence.repositories.StudentRepository;
@@ -24,8 +23,6 @@ public class StudentService {
 	private CourseService courseService;
 	@Autowired
 	private EnrollmentService enrollmentService;
-	@Autowired
-	private ExamService examService;
 	public void createProfile(String userName, String password, String passwordAgain, String email, String firstName,
 			String lastName, String phone, String address, String personalNumericalCode) {
 		Student student = new Student();
@@ -83,17 +80,17 @@ public class StudentService {
 		studentRepository.save(student);
 	}
 
-	public void sendEnrollmentRequest(String userName, String courseName) {
-		Optional<Student> optionalStudent = studentRepository.findByUserName(userName);
+	public void sendEnrollmentRequest(int studentId, int courseId) {
+		Optional<Student> optionalStudent = studentRepository.findById(studentId);
 		Student student = optionalStudent.get();
-		Course course = courseService.getCourseByName(courseName);
+		Course course = courseService.getCourseById(courseId);
 		enrollmentService.sendEnrollmentRequest(student.getIdentityCardNumber(), course.getId());
 	}
 
-	public void unenrollFromCourse(String userName, String courseName) {
-		Optional<Student> optionalStudent = studentRepository.findByUserName(userName);
+	public void unenrollFromCourse(int studentId, int courseId) {
+		Optional<Student> optionalStudent = studentRepository.findById(studentId);
 		Student student = optionalStudent.get();
-		Course course = courseService.getCourseByName(courseName);
+		Course course = courseService.getCourseById(courseId);
 		enrollmentService.unenrollStudent(student.getIdentityCardNumber(), course.getId());
 	}
 
@@ -103,15 +100,6 @@ public class StudentService {
 		Group group = student.getGroup();
 		group.setStudents(studentRepository.findAllByGroupId(group.getId()));
 		return group;
-	}
-
-	public List<Exam> getExams(String userName) {
-		List<Enrollment> enrollments = getEnrollments(userName);
-		List<Exam> exams = new ArrayList<Exam>();
-		for(Enrollment enrollment : enrollments) {
-			exams.add(examService.getExamByCourseId(enrollment.getCourse().getId()));
-		}
-		return exams;
 	}
 
 	public List<Course> getCourses(String userName) {
@@ -127,9 +115,37 @@ public class StudentService {
 		Optional<Student> optionalStudent = studentRepository.findByUserName(userName);
 		Student student = optionalStudent.get();
 		List<Enrollment> enrollments = enrollmentService.getEnrollments(student.getIdentityCardNumber());
+		List<Course> courses = courseService.getAll();
+		if(courses.size() > enrollments.size()) {
+			int nextId = enrollmentService.getNextEnrollmentId();
+			for(Course c : courses) {
+				boolean found = false;
+				for(Enrollment e : enrollments) {
+					if(e.getCourse().equals(c)) {
+						found = true;
+					}
+				}
+				if(!found) {
+					Enrollment newEnrollment = new Enrollment();
+					newEnrollment.setCourse(c);
+					newEnrollment.setStudent(student);
+					newEnrollment.setStatus(EnrollmentService.STATUS_UNENROLLED);
+					newEnrollment.setGrade(-1);
+					newEnrollment.setId(nextId++);
+					enrollmentService.saveEnrollment(newEnrollment);
+				}
+			}
+			enrollments = enrollmentService.getEnrollments(student.getIdentityCardNumber());
+		}
 		return enrollments;
 	}
 
+	public List<Enrollment> getAcceptedEnrollments(String userName) {
+		Optional<Student> optionalStudent = studentRepository.findByUserName(userName);
+		Student student = optionalStudent.get();
+		return enrollmentService.getAcceptedEnrollments(student.getId());
+	}
+	
 	public Student getStudentByUserName(String studentName) {
 		Optional<Student> student = studentRepository.findByUserName(studentName);
 		return student.get();
@@ -152,10 +168,10 @@ public class StudentService {
 		return students;
 	}
 
-	public void cancelEnrollmentRequest(String loggedInUserName, String courseName) {
-		Optional<Student> optionalStudent = studentRepository.findByUserName(loggedInUserName);
+	public void cancelEnrollmentRequest(int studentId, int courseId) {
+		Optional<Student> optionalStudent = studentRepository.findById(studentId);
 		Student student = optionalStudent.get();
-		Course course = courseService.getCourseByName(courseName);
+		Course course = courseService.getCourseById(courseId);
 		enrollmentService.cancelEnrollment(student.getIdentityCardNumber(), course.getId());
 	}
 }

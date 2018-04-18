@@ -2,6 +2,7 @@ package com.application.course_management.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,18 @@ public class EnrollmentService {
 	public List<Enrollment> getEnrollments(int studentId) {
 		List<Enrollment> enrollments = enrollmentRepository.findAllByStudentId(studentId);
 		return enrollments;
+	}
+	
+	public List<Enrollment> getAcceptedEnrollments(int studentId) {
+		List<Enrollment> enrollments = enrollmentRepository.findAllByStudentId(studentId);
+		return enrollments.stream().filter(e -> {
+			return ((Enrollment)e).getStatus().equals(EnrollmentService.STATUS_ACCEPTED);
+		}).collect(Collectors.toList());
+	}
+	public int getNextEnrollmentId() {
+		List<Enrollment> enrollments = enrollmentRepository.findAll();
+		int size = enrollments.size();
+		return enrollments.get(size - 1).getId() + 1;
 	}
 
 	public void unenrollStudent(int identityCardNumber, int courseId) {

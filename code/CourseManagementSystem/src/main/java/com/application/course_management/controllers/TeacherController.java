@@ -2,13 +2,14 @@ package com.application.course_management.controllers;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Request;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Group;
@@ -57,27 +58,32 @@ public class TeacherController {
 		return mv;
 	}
 	@RequestMapping(value = "/courses/student/accept-enrollment", method = RequestMethod.POST)
-	public ModelAndView acceptEnrollment(@RequestBody Request request) {
-		teacherService.acceptStudentEnrollmentRequest(Integer.parseInt(request.getAttribute("studentId").toString()), Integer.parseInt(request.getAttribute("courseId").toString()));
-		List<Course> courses = teacherService.getTaughtCourses(loggedInUserName);
-		ModelAndView mv = new ModelAndView("enrollments");
-		mv.addObject("courses", courses);
-		return mv;
+	public ModelAndView acceptEnrollment(HttpServletRequest request) {
+		String studentId = request.getParameter("studentId");
+		String courseId = request.getParameter("courseId");
+		teacherService.acceptStudentEnrollmentRequest(Integer.parseInt(studentId), Integer.parseInt(courseId));
+		return new ModelAndView("welcome-page");
 	}
 	@RequestMapping(value = "/courses/student/decline-enrollment", method = RequestMethod.POST)
-	public ModelAndView declineEnrollment(@RequestBody Request request) {
-		teacherService.declineStudentEnrollmentRequest(Integer.parseInt(request.getAttribute("studentId").toString()), Integer.parseInt(request.getAttribute("courseId").toString()));
-		List<Course> courses = teacherService.getTaughtCourses(loggedInUserName);
-		ModelAndView mv = new ModelAndView("enrollments");
-		mv.addObject("courses", courses);
-		return mv;
+	public RedirectView declineEnrollment(HttpServletRequest request) {
+		String studentId = request.getParameter("studentId");
+		String courseId = request.getParameter("courseId");
+		teacherService.declineStudentEnrollmentRequest(Integer.parseInt(studentId), Integer.parseInt(courseId));
+		return new RedirectView("welcome-page");
 	}
 	@RequestMapping(value = "/courses/student/delete-student", method = RequestMethod.POST)
-	public ModelAndView deleteStudent(@RequestBody Request request) {
-		teacherService.removeStudentFromCourse(Integer.parseInt(request.getAttribute("studentId").toString()), Integer.parseInt(request.getAttribute("courseId").toString()));
-		List<Course> courses = teacherService.getTaughtCourses(loggedInUserName);
-		ModelAndView mv = new ModelAndView("enrollments");
-		mv.addObject("courses", courses);
-		return mv;
+	public RedirectView deleteStudent(HttpServletRequest request) {
+		String studentId = request.getParameter("studentId");
+		String courseId = request.getParameter("courseId");
+		teacherService.removeStudentFromCourse(Integer.parseInt(studentId), Integer.parseInt(courseId));
+		return new RedirectView("welcome-page");
+	}
+	@RequestMapping(value = "/courses/student/grade", method = RequestMethod.POST)
+	public RedirectView gradeStudent(HttpServletRequest request) {
+		String studentId = request.getParameter("studentId");
+		String courseId = request.getParameter("courseId");
+		String grade = request.getParameter("grade");
+		System.err.println(studentId + " " + courseId + " " + grade);
+		return new RedirectView("welcome-page");
 	}
 }

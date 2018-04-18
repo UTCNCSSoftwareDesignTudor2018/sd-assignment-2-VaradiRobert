@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Exams</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<table class="table table-hover">
+		<tr>
+			<th>Course Name</th>
+			<th>Exam Date</th>
+			<th>Credits</th>
+			<th>Mark</th>
+			<th>Teacher</th>
+		</tr>
+		<tr th:each="enrollment: ${enrollments}">
+			<td th:text="${enrollment.course.name}"></td>
+			<td th:text="${enrollment.course.examDate}"></td>
+			<td th:text="${enrollment.course.credits}"></td>
+			<div th:if="${enrollment.grade == -1}">
+				<td>Not Recorded</td>
+			</div>
+			<div th:unless="${enrollment.grade == -1}">
+				<td th:text="${enrollment.grade}"></td>
+			</div>
+			<td th:text="${enrollment.course.teacher.firstName} + ' ' + ${enrollment.course.teacher.lastName}"></td>
+		</tr>
+	</table>
+</body>
+</html>

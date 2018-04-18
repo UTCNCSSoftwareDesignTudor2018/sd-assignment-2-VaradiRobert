@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Group</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<font size="20" th:text="'Group ' + ${group.number}"></font>
+	<table class="table table-hover">
+		<tr>
+			<th>Full Name</th>
+			<th>Email</th>
+			<th>Phone</th>
+			<th>Address</th>
+		</tr>
+		<tr th:each="student: ${group.students}">
+			<td th:text="${student.firstName} + ' ' + ${student.lastName}"></td>
+			<td th:text="${student.email}"></td>
+			<td th:text="${student.phone}"></td>
+			<td th:text="${student.address}"></td>
+		</tr>
+	</table>
+</body>
+</html>

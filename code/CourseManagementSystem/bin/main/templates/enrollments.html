@@ -3,15 +3,117 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Courses</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    -webkit-animation-name: fadeIn; /* Fade in the background */
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+}
+
+/* Modal Content */
+.modal-content {
+    position: fixed;
+    top: 300px;
+    background-color: #fefefe;
+    width: 50%;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #ffffff;
+    color: black;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #ffffff;
+    color: black;
+}
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+    from {top: -300px; opacity: 0} 
+    to {top: 300px; opacity: 1}
+}
+
+@keyframes slideIn {
+    from {top: -300px; opacity: 0}
+    to {top: 300px; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+</style>
+
+<script language="javascript">
+	function openModal(studentId, courseId) {
+		var modal = document.getElementById(studentId + ';' + courseId);
+		modal.style.display = "block";
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
+	}
+</script>
 <link rel="stylesheet" href="/css/tab.css"/>
 <script src="/js/tab.js"></script>
+<script src="/js/accept-enrollment-request-button.js"></script>
+<script src="/js/decline-enrollment-request-button.js"></script>
+<script src="/js/delete-student-from-course-button.js"></script>
 </head>
 <body>
 	<div class="tab">
 		<button class="tablinks" th:each="course: ${courses}" th:onclick="'listStudents(event,' + ${course.id} + ')'" th:text="${course.name}"></button>
 	</div>
 	<div th:each="course: ${courses}" th:id="${course.id}" class="tabcontent">
-	  <table>
+	  <table class="table table-hover">
 	  	<tr>
 	  		<th>Full Name</th>
 	  		<th>Phone</th>
@@ -34,16 +136,34 @@
 	  		</div>
 	  		<div th:if="${enrollment.status == 'Accepted'}">
 	  			<td><button class="delete-button" th:onclick="'deleteStudentFromCourse(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Delete</button></td>
-	  			<td><button class="grade-button">Grade</button></td>
-	  		</div>
-	  		<div th:if="${enrollment.status == 'Enrolled'}">
-	  			<td><button class="delete-button" th:onclick="'deleteStudentFromCourse(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Delete</button></td>
-	  			<td><button class="grade-button">Grade</button></td>
+	  			<td><button class="grade-button" th:onclick="'openModal(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Grade</button></td>
 	  		</div>
 	  		<div th:if="${enrollment.status == 'Request'}">
 	  			<td><button class="accept-button" th:onclick="'acceptEnrollmentRequest(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Accept</button></td>
 	  			<td><button class="decline-button" th:onclick="'declineEnrollmentRequest(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Decline</button></td>
 	  		</div>
+	  		<div class="modal" th:id="${enrollment.student.id} + ';' + ${enrollment.course.id}" role="dialog">
+			    <div class="modal-dialog">
+			       <!-- Modal content -->
+				  <div class="modal-content">
+				    <div class="modal-header">
+				      <h2>Grade Student</h2>
+				    </div>
+				    <div class="modal-body">
+				    	<form action="http://localhost/teacher/students/grade" method="POST">
+				    		<font size="3" th:text="'Student Name: ' + ${enrollment.student.firstName} + ' ' + ${enrollment.student.lastName}"></font><br>
+				    		<font size="3" th:text="'Course: ' + ${enrollment.course.name}"></font><br>
+				    		<input th:value="${enrollment.student.id}" th:type="hidden" th:name="studentId"/>
+				    		<input th:value="${enrollment.course.id}" th:type="hidden" th:name="courseId"/>
+				    		Grade: <input min="1" max="10" step="0.05" type="number" name="grade" th:value="1.0"/><br>
+				    		<button class="btn btn-info" type="submit">Grade Student</button>
+				    	</form>
+				    </div>
+				    <div class="modal-footer">
+				    </div>
+				  </div>
+			   </div>
+			</div>
 	  	</tr>
 	  </table>
 	</div>

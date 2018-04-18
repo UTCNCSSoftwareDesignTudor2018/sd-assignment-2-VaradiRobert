@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Student Sidebar</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/sidebar-menu.css">
+</head>
+
+<body>
+  <section style="width: 230px">
+    <ul class="sidebar-menu">
+      <li class="sidebar-header" th:text="${fullName}"></li>
+      <li>
+        <a href="#">
+          <i class="fa fa-dashboard"></i> <span>Groups</span> <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="sidebar-submenu">
+          <li><a href="http://localhost:8080/student/group" target="student-main"><i class="fa fa-circle-o"></i>My Group</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa fa-files-o"></i>
+          <span>Courses</span>
+        </a>
+        <ul class="sidebar-submenu" style="display: none;">
+          <li><a href="http://localhost:8080/student/courses/list" target="student-main"><i class="fa fa-circle-o"></i>List Courses</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa fa-files-o"></i>
+          <span>Exams</span>
+        </a>
+        <ul class="sidebar-submenu" style="display: none;">
+          <li><a href="http://localhost:8080/student/exams/list" target="student-main"><i class="fa fa-circle-o"></i>List Exams</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa fa-files-o"></i>
+          <span>Profile</span>
+        </a>
+        <ul class="sidebar-submenu" style="display: none;">
+          <li><a href="http://localhost:8080/student/profile/show" target="student-main"><i class="fa fa-circle-o"></i>My Profile</a></li>
+        </ul>
+      </li>
+  	</ul>
+  </section>
+
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+  <script src="/js/sidebar-menu.js"></script>
+  <script>
+    $.sidebarMenu($('.sidebar-menu'));
+  </script>
+</body>
+
+</html>

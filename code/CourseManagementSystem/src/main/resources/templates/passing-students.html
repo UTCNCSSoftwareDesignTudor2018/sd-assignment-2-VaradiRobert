@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title th:text="${title}"></title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+.content{
+position: relative;
+margin-left: auto;
+margin-right: auto;
+border: 1px solid #E0E0E0;
+min-height: 200px;
+width: 1000px;
+padding: 0px 0px 80px 0px;
+background-color: #fff;
+}
+</style>
+<script>
+	function sendName(requestUrl) {
+		console.log($('#reportName').val());
+		console.log(requestUrl);
+		$.post(requestUrl, {'reportName': $('#reportName').val()});
+	}
+</script>
+</head>
+<body>
+	<h1 th:text="${title}"></h1>
+	<div th:each="report: ${reports}" th:class="content">
+		<h2 th:text="'Report Name: ' + ${report.name}"></h2>
+		<h3 th:text="'Report Generation Date: ' + ${report.date}"></h3>
+		<h3>Courses: </h3>
+		<div th:each="course: ${report.courses}">
+			<h4 th:text="'Course Name: ' + ${course.name}"></h4>
+			<div th:each="enrollment: ${course.enrollments}">
+				<h5 th:text="'Student: ' + ${enrollment.student.firstName} + ' ' + ${enrollment.student.lastName}"></h5>
+				<h6 th:text="'Address: ' + ${enrollment.student.address}"></h6>
+				<h6 th:text="'Phone: ' + ${enrollment.student.phone}"></h6>
+				<h6 th:text="'Email: ' + ${enrollment.student.email}"></h6>
+				<div th:if="${enrollment.grade == -1}">
+					<h6>Grade: Not Recorded</h6>	
+				</div>
+				<div th:unless="${enrollment.grade == -1}">
+					<h6 th:text="'Grade: ' + ${enrollment.grade}"></h6>	
+				</div>
+			</div>
+		</div>
+	</div>
+	Name of the report: <input type="text" id="reportName"/>
+	<button type="button" onclick="sendName('http://localhost:8080/teacher/reports/generate/passing-students')">Generate Report</button>
+</body>
+</html>

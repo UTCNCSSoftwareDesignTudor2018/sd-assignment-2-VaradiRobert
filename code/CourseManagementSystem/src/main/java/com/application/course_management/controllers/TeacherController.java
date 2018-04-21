@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Group;
+import com.application.course_management.persistence.entities.Report;
 import com.application.course_management.persistence.entities.Teacher;
 import com.application.course_management.services.ReportService;
 import com.application.course_management.services.TeacherService;
@@ -23,7 +24,7 @@ import com.application.course_management.services.TeacherService;
 public class TeacherController {
 	@Autowired
 	private TeacherService teacherService;
-	private String loggedInUserName = "shawthorn0";
+	private String loggedInUserName = "gmcginny5";
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView teacherMainMenu() {
 		ModelAndView mv = new ModelAndView("teacher-main-menu");
@@ -81,35 +82,63 @@ public class TeacherController {
 		return new RedirectView("welcome-page");
 	}
 	@RequestMapping(value = "/courses/student/grade", method = RequestMethod.POST)
-	public RedirectView gradeStudent(HttpServletRequest request) {
+	@ResponseBody
+	public String gradeStudent(HttpServletRequest request) {
 		String studentId = request.getParameter("studentId");
 		String courseId = request.getParameter("courseId");
 		String grade = request.getParameter("grade");
-		System.err.println(studentId + " " + courseId + " " + grade);
-		return new RedirectView("welcome-page");
-	}
-	@RequestMapping(value = "/reports/generate/all-enrolled-students-and-grades", method = RequestMethod.GET)
-	@ResponseBody
-	public String generateAllEnrolledStudentsAndGradesReport() {
-		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.ALL_STUDENTS_AND_GRADES_REPORT, "myReport");
+		teacherService.gradeStudent(Integer.parseInt(studentId), Integer.parseInt(courseId), Double.parseDouble(grade));
 		return "OK";
 	}
-	@RequestMapping(value = "/reports/generate/all-enrolled-students-by-groups", method = RequestMethod.GET)
+	@RequestMapping(value = "/reports/generate/all-students", method = RequestMethod.POST)
 	@ResponseBody
-	public String generateAllEnrolledStudentsByGroupsReport() {
-		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.ALL_STUDENTS_BY_GROUPS_REPORT, "myReport");
+	public String generateAllEnrolledStudentsAndGradesReport(HttpServletRequest request) {
+		String reportName = request.getParameter("reportName");
+		Teacher t = teacherService.getTeacherByUserName(loggedInUserName);
+		teacherService.generateReport(t, ReportService.ALL_STUDENTS_AND_GRADES_REPORT, reportName);
 		return "OK";
 	}
-	@RequestMapping(value = "/reports/generate/passing-students", method = RequestMethod.GET)
+	@RequestMapping(value = "/reports/generate/passing-students", method = RequestMethod.POST)
 	@ResponseBody
-	public String generatePassingStudentsReport() {
-		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.PASSING_STUDENTS_REPORT, "myReport");
+	public String generatePassingStudentsReport(HttpServletRequest request) {
+		String reportName = request.getParameter("reportName");
+		Teacher t = teacherService.getTeacherByUserName(loggedInUserName);
+		teacherService.generateReport(t, ReportService.PASSING_STUDENTS_REPORT, reportName);
 		return "OK";
 	}
-	@RequestMapping(value = "/reports/generate/failing-students", method = RequestMethod.GET)
+	@RequestMapping(value = "/reports/generate/failing-students", method = RequestMethod.POST)
 	@ResponseBody
-	public String generateFailingStudentsReport() {
-		teacherService.generateReport(teacherService.getTeacherByUserName(loggedInUserName), ReportService.FAILING_STUDENTS_REPORT, "myReport");
+	public String generateFailingStudentsReport(HttpServletRequest request) {
+		String reportName = request.getParameter("reportName");
+		Teacher t = teacherService.getTeacherByUserName(loggedInUserName);
+		teacherService.generateReport(t, ReportService.FAILING_STUDENTS_REPORT, reportName);
 		return "OK";
+	}
+	@RequestMapping(value = "/reports/show/all-enrolled-students-and-grades-report", method = RequestMethod.GET)
+	public ModelAndView showAllEnrolledStudentsAndGradesReport() {
+		Teacher t = teacherService.getTeacherByUserName(loggedInUserName);
+		List<Report> reports = teacherService.getReports(t, ReportService.ALL_STUDENTS_AND_GRADES_REPORT);
+		ModelAndView mv = new ModelAndView("students-and-grades-reports");
+		mv.addObject("reports", reports);
+		mv.addObject("title", "All Enrolled Students and Grades Reports");
+		return mv;
+	}
+	@RequestMapping(value = "/reports/show/passing-students-report", method = RequestMethod.GET)
+	public ModelAndView showPassingStudentsReport() {
+		Teacher t = teacherService.getTeacherByUserName(loggedInUserName);
+		List<Report> reports = teacherService.getReports(t, ReportService.PASSING_STUDENTS_REPORT);
+		ModelAndView mv = new ModelAndView("passing-students");
+		mv.addObject("reports", reports);
+		mv.addObject("title", "Passing Students Reports");
+		return mv;
+	}
+	@RequestMapping(value = "/reports/show/failing-students-report", method = RequestMethod.GET)
+	public ModelAndView showFailingStudentsReport() {
+		Teacher t = teacherService.getTeacherByUserName(loggedInUserName);
+		List<Report> reports = teacherService.getReports(t, ReportService.FAILING_STUDENTS_REPORT);
+		ModelAndView mv = new ModelAndView("failing-students");
+		mv.addObject("reports", reports);
+		mv.addObject("title", "Failing Students Reports");
+		return mv;
 	}
 }

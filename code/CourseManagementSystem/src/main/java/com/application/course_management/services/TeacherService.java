@@ -47,12 +47,15 @@ public class TeacherService {
 		enrollmentService.declineEnrollment(student.getIdentityCardNumber(), course.getId());
 	}
 	
-	public void gradeStudent(String studentName, String courseName, double grade) {
-		Course course = courseService.getCourseByName(courseName);
-		Student student = studentService.getStudentByUserName(studentName);
+	public void gradeStudent(int studentId, int courseId, double grade) {
+		Course course = courseService.getCourseById(courseId);
+		Student student = studentService.getStudentById(studentId);
 		Enrollment enrollment = enrollmentService.getEnrollmentByStudentIdAndCourseId(student.getIdentityCardNumber(), course.getId());
+		System.err.println("Before: " + enrollment.getGrade());
 		enrollment.setGrade(grade);
+		System.err.println("After: " + enrollment.getGrade());
 		enrollmentService.saveEnrollment(enrollment);
+		System.err.println(enrollmentService.getEnrollmentByStudentIdAndCourseId(student.getIdentityCardNumber(), course.getId()).getGrade());
 	}
 
 	public List<Student> getStudentsEnrolledTo(String courseName) {

@@ -76,7 +76,6 @@ public class EnrollmentService {
 	}
 
 	public void saveEnrollment(Enrollment enrollment) {
-		enrollment.setGrade(-1);
 		enrollmentRepository.save(enrollment);
 	}
 

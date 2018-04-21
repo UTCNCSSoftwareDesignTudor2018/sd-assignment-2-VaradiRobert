@@ -67,13 +67,17 @@ public class AllEnrolledStudentsAndGradesReportDAO extends ReportDAO {
 		DBCursor cursor = databaseCollection.find(query);
 		while(cursor.hasNext()) {
 			DBObject dbo = cursor.next();
-			Report report = new AllEnrolledStudentsAndGradesReport();
+			System.err.println(dbo.toString());
+			AllEnrolledStudentsAndGradesReport report = new AllEnrolledStudentsAndGradesReport();
 			report.setTeacher(teacher);
-			report.setDate((Date)dbo.get("date"));
-			List<Enrollment> enrollments = new ArrayList<Enrollment>();
+			java.util.Date utilDate = (java.util.Date)dbo.get("date");
+			java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+			report.setDate(sqlDate);
 			List<DBObject> dboCourses = (List<DBObject>)dbo.get("courses");
+			List<Course> courses = new ArrayList<Course>();
 			for(DBObject dboCourse : dboCourses) {
 				List<DBObject> dboEnrollments = (List<DBObject>)dboCourse.get("enrollments");
+				List<Enrollment> enrollments = new ArrayList<Enrollment>();
 				Course course = new Course();
 				course.setName((String)dboCourse.get("courseName"));
 				for(DBObject dboEnrollment : dboEnrollments) {
@@ -82,19 +86,20 @@ public class AllEnrolledStudentsAndGradesReportDAO extends ReportDAO {
 					String[] names = fullName.split(" ");
 					student.setFirstName(names[0]);
 					student.setLastName(names[1]);
-					String gradeString = (String)dboEnrollment.get("grade");
+					String gradeString = dboEnrollment.get("grade").toString();
 					double grade = (gradeString.equals("Not Recorded") ? -1 : Double.parseDouble(gradeString));
 					student.setAddress((String)dboEnrollment.get("address"));
 					student.setEmail((String)dboEnrollment.get("email"));
 					student.setPhone((String)dboEnrollment.get("phone"));
 					Enrollment enrollment = new Enrollment();
-					enrollment.setCourse(course);
 					enrollment.setGrade(grade);
 					enrollment.setStudent(student);
 					enrollments.add(enrollment);
 				}
+				course.setEnrollments(enrollments);
+				courses.add(course);
 			}
-			((AllEnrolledStudentsAndGradesReport)report).setEnrollments(enrollments);
+			((AllEnrolledStudentsAndGradesReport)report).setCourses(courses);
 			report.setName((String)dbo.get("reportName"));
 			reports.add(report);
 		}

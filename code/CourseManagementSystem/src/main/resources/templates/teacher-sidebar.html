@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/css/sidebar-menu.css">
 </head>
 
-<body>
+<body bgcolor=black>
   <section style="width: 230px">
     <ul class="sidebar-menu">
       <li class="sidebar-header" th:text="${fullName}"></li>
@@ -36,7 +36,9 @@
           <span>Reports</span>
         </a>
         <ul class="sidebar-submenu" style="display: none;">
-          <li><a href="http://localhost:8080/teacher/courses/list" target="teacher-main"><i class="fa fa-circle-o"></i>List Courses</a></li>
+          <li><a href="http://localhost:8080/teacher/reports/show/all-enrolled-students-and-grades-report" target="teacher-main"><i class="fa fa-circle-o"></i>All Students</a></li>
+          <li><a href="http://localhost:8080/teacher/reports/show/passing-students-report" target="teacher-main"><i class="fa fa-circle-o"></i>Passing Students</a></li>
+          <li><a href="http://localhost:8080/teacher/reports/show/failing-students-report" target="teacher-main"><i class="fa fa-circle-o"></i>Failing Students</a></li>
         </ul>
       </li>
   	</ul>

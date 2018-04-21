@@ -92,14 +92,29 @@ body {font-family: Arial, Helvetica, sans-serif;}
 </style>
 
 <script language="javascript">
-	function openModal(studentId, courseId) {
-		var modal = document.getElementById(studentId + ';' + courseId);
+	function openModal(studentId, courseId, studentFirstName, studentLastName, courseName) {
+		var modal = document.getElementById('grade-modal');
+		document.getElementById("fullName").textContent = studentFirstName + ' ' + studentLastName;
+		document.getElementById("courseName").textContent = courseName;
+		$("#courseId").val(courseId);
+		$("#studentId").val(studentId);
 		modal.style.display = "block";
 		window.onclick = function(event) {
 		    if (event.target == modal) {
 		        modal.style.display = "none";
 		    }
 		}
+	}
+	function gradeStudent() {
+		var studentId = $("#studentId").val();
+		var courseId = $("#courseId").val();
+		var grade = $("#grade").val();
+		console.log(studentId + ' ' + courseId + ' ' + grade);
+		var data = {'studentId': studentId, 'courseId': courseId, 'grade': grade};
+		console.log(data);
+		$.post("http://localhost:8080/teacher/courses/student/grade", data);
+		document.getElementById('grade-modal').style.display = "none";
+		$("#grade").val('-1');
 	}
 </script>
 <link rel="stylesheet" href="/css/tab.css"/>
@@ -136,36 +151,35 @@ body {font-family: Arial, Helvetica, sans-serif;}
 	  		</div>
 	  		<div th:if="${enrollment.status == 'Accepted'}">
 	  			<td><button class="delete-button" th:onclick="'deleteStudentFromCourse(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Delete</button></td>
-	  			<td><button class="grade-button" th:onclick="'openModal(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Grade</button></td>
+	  			<td><button class="grade-button" th:onclick="'openModal(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ',\'' + ${enrollment.student.firstName} + '\',\'' + ${enrollment.student.lastName} + '\',\'' + ${enrollment.course.name} + '\')'">Grade</button></td>
 	  		</div>
 	  		<div th:if="${enrollment.status == 'Request'}">
 	  			<td><button class="accept-button" th:onclick="'acceptEnrollmentRequest(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Accept</button></td>
 	  			<td><button class="decline-button" th:onclick="'declineEnrollmentRequest(' + ${enrollment.student.id} + ', ' + ${enrollment.course.id} + ')'">Decline</button></td>
 	  		</div>
-	  		<div class="modal" th:id="${enrollment.student.id} + ';' + ${enrollment.course.id}" role="dialog">
-			    <div class="modal-dialog">
-			       <!-- Modal content -->
-				  <div class="modal-content">
-				    <div class="modal-header">
-				      <h2>Grade Student</h2>
-				    </div>
-				    <div class="modal-body">
-				    	<form action="http://localhost/teacher/courses/student/grade" method="POST">
-				    		<font size="3" th:text="'Student Name: ' + ${enrollment.student.firstName} + ' ' + ${enrollment.student.lastName}"></font><br>
-				    		<font size="3" th:text="'Course: ' + ${enrollment.course.name}"></font><br>
-				    		<input th:value="${enrollment.student.id}" th:type="hidden" th:name="studentId"/>
-				    		<input th:value="${enrollment.course.id}" th:type="hidden" th:name="courseId"/>
-				    		Grade: <input min="1" max="10" step="0.05" type="number" name="grade" th:value="1.0"/><br>
-				    		<button class="btn btn-info" type="submit">Grade Student</button>
-				    	</form>
-				    </div>
-				    <div class="modal-footer">
-				    </div>
-				  </div>
-			   </div>
-			</div>
 	  	</tr>
 	  </table>
+	</div>
+	<div class="modal" id="grade-modal" role="dialog">
+	    <div class="modal-dialog">
+		  <div class="modal-content">
+		    <div class="modal-header">
+		      <h2>Grade Student</h2>
+		    </div>
+		    <div class="modal-body">
+		    	<form action="http://localhost/teacher/courses/student/grade" method="POST">
+		    		Student Name: <font size="3" id="fullName"></font><br>
+		    		Course Name: <font size="3" id="courseName"></font><br>
+		    		<input value="" type="hidden" name="studentId" id="studentId"/>
+		    		<input value="" type="hidden" name="courseId" id="courseId"/>
+		    		Grade: <input min="1" max="10" step="0.05" type="number" name="grade" value="1.0" id="grade"/><br>
+		    		<button class="btn btn-info" type="button" onclick="gradeStudent()">Grade Student</button>
+		    	</form>
+		    </div>
+		    <div class="modal-footer">
+		    </div>
+		  </div>
+	   </div>
 	</div>
 </body>
 </html>

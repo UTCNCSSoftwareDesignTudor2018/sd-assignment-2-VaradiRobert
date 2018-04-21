@@ -2,16 +2,16 @@ package com.application.course_management.persistence.reports;
 
 import java.util.List;
 
-import com.application.course_management.persistence.entities.Enrollment;
+import com.application.course_management.persistence.entities.Course;
 import com.application.course_management.persistence.entities.Report;
 
 public class AllEnrolledStudentsAndGradesReport extends Report {
-	private List<Enrollment> enrollments;
-	public void setEnrollments(List<Enrollment> enrollments) {
-		this.enrollments = enrollments;
+	private List<Course> courses;
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
 	}
-	public List<Enrollment> getEnrollments() {
-		return enrollments;
+	public List<Course> getCourses() {
+		return courses;
 	}
 
 }
